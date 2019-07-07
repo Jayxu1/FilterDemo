@@ -1,0 +1,210 @@
+<html lang="en">
+<head>
+	<meta charset = "UTF-8">
+	<title></title>
+	
+	<style type="text/css">
+	*{
+		margin: 0px;
+		padding: 0px;
+		list-style: none;
+	}
+
+	.wrapper{
+		padding: 10px 15px;
+		width: 400px;
+		height: 380px;
+		background: white;
+		border: 1px solid black;
+		margin: 100px auto 0px;
+		border-radius: 20px;
+	}
+
+	.wrapper .sWrapper{
+		margin-bottom: 20px;
+	}
+
+	.wrapper .sWrapper .sText{
+		width: 220px;
+		height: 25px;
+		padding-left: 10px;
+
+	}
+	.wrapper .sWrapper .btm{
+		cursor: pointer;
+		color: #3c8dff;
+		padding: 0px 5px;
+
+	}
+	.wrapper .sWrapper .btm.active{
+		color: #fff;
+		background: #3c8dff;
+		border-radius: 10px;
+	}
+	.wrapper .flWrapper{
+
+	}
+
+	.wrapper .flWrapper ul{
+
+	}
+	.wrapper .flWrapper ul li{
+		position: relative;
+		padding-left: 50px;
+		padding-top: 10px;
+		padding-bottom: 10px;
+		border-bottom: 1px solid #999;
+	}
+
+	.wrapper .flWrapper ul li img{
+		position: absolute;
+		width: 40px;
+		height: 40px;
+		left: 0px;
+		top: 10px;
+		background-size: 100%;
+	}
+
+	.wrapper .flWrapper ul li .name{
+		margin-bottom: 10px;
+	}
+
+	.wrapper .flWrapper ul li .age{
+		font-size: 12px;
+		color: #666;
+	}
+
+
+
+	</style>
+
+</head>
+<body>
+	<div class = 'wrapper'>
+		<div class = 'sWrapper'>
+			<input type = "text" class = 'sText'>
+			<span class = 'btm' sex = 'm'>Male</span>
+			<span class = 'btm' sex = 'f'>Female</span>
+			<span class = 'btm active' sex = 'all'>All</span>
+		</div>
+		<div class = 'flWrapper'>		
+			<ul>
+				<!--<li>
+					<img src="./download.jpg">
+					<p class = 'name'>XuJay</p>
+					<p class = 'age'>18</p>
+				</li>
+				<li>
+					<img src="./download-1.jpg">
+					<p class = 'name'></p>
+					<p class = 'age'></p>
+				</li>
+				<li>
+					<img src="./download-2.jpg">
+					<p class = 'name'></p>
+					<p class = 'age'></p>
+				</li>
+				<li>
+					<img src="./download-3.jpg">
+					<p class = 'name'></p>
+					<p class = 'age'></p>
+				</li>
+				<li>
+					<img src="./download-1.jpg">
+					<p class = 'name'></p>
+					<p class = 'age'></p>
+				</li> !-->
+			</ul>	
+		</div>
+	
+	</div>
+<script type="text/javascript">
+
+var personArr = [{name:'XuJay', src: './download.jpg', age:'18', sex:'m'},
+				{name:'ZhangYan', src: './download-1.jpg',age:'28', sex:'f'},
+				{name:'XuJasper', src: './download-2.jpg', age:'1', sex:'m'},
+				{name:'XuJc', src: './download-3.jpg',age:'15', sex:'f'},
+				{name:'FangJunlan', src: './download-1.jpg',age:'48', sex:'f'},]
+
+
+
+ 
+ var oUl = document.getElementsByTagName('ul')[0];
+ var oInput = document.getElementsByTagName('input')[0];
+ 
+ //全局过滤条件
+ var filterText = '';
+ var filtersex = 'all';
+ 
+
+
+//数据渲染
+function renderPage(data){  
+
+	var htmlStr = '';  //空字符串
+	oUl.innerHTML = '';  //ul里的html暂时为空
+	data.forEach(function(ele,index,self){ //用forEach遍历整个数组
+		htmlStr = htmlStr + '<li><img src = "' + ele.src + '"></img><p class = "name">'+ele.name+'</p><p class = "age">'+ele.age+'</p></li>' //把ul里的html里面需要的内容放到空字符串里面去
+	});
+	oUl.innerHTML = htmlStr;   //把有内容的空字符串放到ul里面去
+}
+
+renderPage(personArr);
+
+
+//行为
+oInput.oninput = function(){ //调用input里的oninput方法检查输入内容
+	filterText = this.value;
+	var newArr = filterArrByText(personArr,filterText);
+	var newArr2 = filterArrBySex(newArr,filtersex);
+	renderPage(newArr2); //调用renderpage方法只显示过滤完的信息
+}
+
+
+function filterArrByText(data,text){ //过滤的方法
+	if(!text){ //如果不是输入的内容
+		return data;  //返回原数据
+	}else{
+		return data.filter(function(ele,index){ //返回数据中选中的内容
+			return ele.name.indexOf(text) != -1;  //返回数据中indexof中返回值为正数的数据
+		});
+	}
+}
+
+
+var oBtmArr = [].slice.call(document.getElementsByClassName('btm'),0); //拿btm
+var lastActive = oBtmArr[2]; //初始avtive为第三个btm
+
+oBtmArr.forEach(function(ele,index,self){ //forEach遍历btm
+	ele.onclick = function(){ //点击事件
+		changeActive(this); //点击方法
+		filtersex = this.getAttribute('sex') 
+		var newArr = filterArrBySex(personArr,filtersex);
+		var newArr2 = filterArrByText(newArr,filterText);
+		renderPage(newArr2);
+
+	}
+})
+
+function changeActive(curActiveBtm){ //changeactive方法
+	curActiveBtm.className = 'btm active';  //当前的btm的classname = btm active
+	lastActive.className = 'btm'; //第三个不btm的classname = btm
+	lastActive = curActiveBtm; //把当前btm变为最后的btm
+}
+
+function filterArrBySex(data,sex){ //filterarrbysex方法
+	if(sex == 'all'){ //如果sex = all
+		return data; //返回原始数据
+	}else{
+		return data.filter(function(ele,index,self){//不然用filter返回
+			return ele.sex == sex;
+		})
+	}
+}
+
+
+
+
+</script>
+</body>
+</html>
